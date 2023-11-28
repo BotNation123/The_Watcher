@@ -45,23 +45,42 @@ async def send_links():
 
 # timer = 4
 tiempo = random.randint(4, 6)  # tiene como 2 minutos de desfase
-test_timer = random.randint(15, 20)
+test_timer = random.randint(15, 25)
 
 
 async def views_test(views: int):
     global test_timer
     channel = await bot.fetch_channel(1166463723473469533)
+    headers = {
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "en-GB,en;q=0.9",
+        "dnt": "1",
+        "referer": "https://www.ebay.com/",
+        "sec-ch-ua": '" Not A;Brand";v="99", "Chromium";v="102", "Google Chrome";v="102"',
+        "sec-ch-ua-full-version": '"102.0.5005.63"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-model": '""',
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-ch-ua-platform-version": '"10.0.0"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+    }
     try:
         links = handle_getAllLinks()
         for y in links:
             for i in range(views):
                 print(f"adding view {i+1}... to {y} ")
+                r = requests.get(y, headers=headers)
+                print(r.status_code)
             await asyncio.sleep(test_timer)
-            print(f"added {views} de mentira in {test_timer} seconds")
-            await channel.send(
-                f"added {views} de mentira in {test_timer} seconds to {y}"
-            )
-            test_timer = random.randint(10, 20)
+            print(f"added {views}  in {test_timer} seconds")
+            await channel.send(f"added {views} in {test_timer} seconds to {y}")
+            test_timer = random.randint(15, 25)
             print(f"new timer: {test_timer}")
             await channel.send(f"new timer: {test_timer}")
 
@@ -77,7 +96,7 @@ async def message_test():
 @tasks.loop(minutes=tiempo)
 async def testMessage():
     global tiempo
-    await views_test(20)
+    await views_test(45)
     await message_test()
     tiempo = random.randint(1445, 1560)
     testMessage.change_interval(minutes=tiempo)

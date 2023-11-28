@@ -31,7 +31,7 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
         await self.tree.sync()
-        # testMessage.start()
+        testMessage.start()
 
 
 intents = discord.Intents.all()

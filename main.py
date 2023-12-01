@@ -90,13 +90,13 @@ async def views_test(views: int):
 
 async def message_test():
     channel = await bot.fetch_channel(1179121530769248297)
-    await channel.send(f"han pasado {tiempo} minutos, test")
+    await channel.send(f"han pasado {tiempo} minutos")
 
 
 @tasks.loop(minutes=tiempo)
 async def testMessage():
     global tiempo
-    #await views_test(45)
+    await views_test(45)
     await message_test()
     tiempo = random.randint(1445, 1560)
     testMessage.change_interval(seconds=10)

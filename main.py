@@ -31,7 +31,7 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
         await self.tree.sync()
-        #testMessage.start()
+        # testMessage.start()
 
 
 intents = discord.Intents.all()
@@ -39,7 +39,7 @@ bot = Bot(intents=intents)
 
 
 async def send_links():
-    channel = await bot.fetch_channel(1166480098631884940)
+    channel = await bot.fetch_channel(1179121530769248297)
     await channel.send(handle_getAllLinks())
 
 
@@ -50,7 +50,7 @@ test_timer = random.randint(15, 25)
 
 async def views_test(views: int):
     global test_timer
-    channel = await bot.fetch_channel(1166463723473469533)
+    channel = await bot.fetch_channel(1179121530769248297)
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
         "accept-encoding": "gzip, deflate, br",
@@ -89,17 +89,17 @@ async def views_test(views: int):
 
 
 async def message_test():
-    channel = await bot.fetch_channel(1166463723473469533)
-    await channel.send(f"test, han pasado {tiempo} minutos")
+    channel = await bot.fetch_channel(1179121530769248297)
+    await channel.send(f"test, se ha enviado el mensaje al canal correcto")
 
 
 @tasks.loop(minutes=tiempo)
 async def testMessage():
     global tiempo
-    await views_test(45)
+    # await views_test(45)
     await message_test()
-    tiempo = random.randint(1445, 1560)
-    testMessage.change_interval(minutes=tiempo)
+    # tiempo = random.randint(1445, 1560)
+    testMessage.change_interval(seconds=5)
 
 
 @testMessage.before_loop
@@ -107,36 +107,9 @@ async def before_test():
     await bot.wait_until_ready()
 
 
-@bot.hybrid_command(name="ping", description="Returns pong and test command")
-async def ping(interaction: discord.Interaction):
-    await interaction.reply(content="Pong!")
-
-
-@bot.hybrid_command(name="test3", description="this is another test")
-async def test3(interaction: discord.Interaction):
-    await interaction.reply(f"this is a test {interaction.author.mention}")
-
-
-@bot.hybrid_command(name="test", description="returns a random number")
-async def test(interaction: discord.Interaction):
-    await interaction.reply(content=str(random.randint(1, 6)))
-
-
-@bot.hybrid_command(name="test2", description="says something")
-@app_commands.describe(arg="say something")
-@app_commands.rename(arg="thing_to_say")
-async def say(interaction: discord.Interaction, arg: str):
-    author = interaction.author.mention
-    await interaction.reply(content=f"{author} said {arg}")
-
-
-@bot.hybrid_command(name="test4", description="this is a test")
-@app_commands.rename(the_argument="person_to_ban")
-async def test4(interaction: discord.Interaction, the_argument: discord.Member):
-    await interaction.reply(content=f"this is a test {the_argument}")
-
-
-@bot.hybrid_command(name="add_link", description="add a link to the database")
+@bot.hybrid_command(
+    name="add_link", description="agrega un link de un producto a la base de datos"
+)
 @app_commands.describe(arg="link to add")
 @app_commands.rename(arg="link")
 async def add_link(interaction: discord.Interaction, arg: str):
@@ -144,17 +117,37 @@ async def add_link(interaction: discord.Interaction, arg: str):
     await interaction.reply(content=handle_submit(arg, author))
 
 
-@bot.hybrid_command(name="roll", description="roll a dice of 6 faces")
-async def response(interaction: discord.Interaction):
-    await interaction.reply(content=handle_roll())
-
-
-@bot.hybrid_command(name="view_links", description="view all your links")
+@bot.hybrid_command(name="view_links", description="muestra todos tus links")
 async def response(interaction: discord.Interaction):
     await interaction.reply(content=handle_getLinks())
 
 
-@bot.hybrid_command(name="add_views", description="add a view to a product")
+@bot.hybrid_command(
+    name="stop_task", description="para la funcion de agregar vistas automaticamente"
+)
+async def response(interaction: discord.Interaction):
+    author = interaction.author.mention
+    testMessage.cancel()
+    testMessage.stop()
+    await interaction.reply(
+        content=f"se ha parado la tarea de agregar vistas por {author}"
+    )
+
+
+@bot.hybrid_command(
+    name="start_task", description="inicia la funcion de agregar vistas automaticamente"
+)
+async def response(interaction: discord.Interaction):
+    author = interaction.author.mention
+    testMessage.start()
+    await interaction.reply(
+        content=f"se ha iniciado la tarea de agregar vistas por {author}"
+    )
+
+
+@bot.hybrid_command(
+    name="add_views", description="pone x vistas a un producto dado un link"
+)
 @app_commands.describe(
     arg="link of the product to add view to", arg2="number of views to add"
 )
@@ -207,7 +200,7 @@ async def response(interaction: discord.Interaction, arg: str, arg2: int):
 
 @bot.hybrid_command(
     name="add_views_to_all",
-    description="test to send views to all the links of the database",
+    description="agrega x vistas a todos los productos de forma manual",
 )
 @app_commands.describe(arg="add x views to all the links")
 @app_commands.rename(arg="number")
@@ -218,9 +211,6 @@ async def response(interaction: discord.Interaction, arg: int):
             title="Views",
             description=f"Adding {arg} views to all links...",
         )
-        # await interaction.reply(
-        #     content=f"{author} has added {arg} views to all links", embed=embed
-        # )
 
         headers = {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -261,7 +251,7 @@ async def response(interaction: discord.Interaction, arg: int):
         await interaction.reply(content=f"An error occurred: {str(e)}")
 
 
-@bot.hybrid_command(name="delete_link", description="delete a link from the database")
+@bot.hybrid_command(name="delete_link", description="borra un link de la base de datos")
 @app_commands.describe(arg="link to delete")
 @app_commands.rename(arg="link")
 async def response(interaction: discord.Interaction, arg: str):

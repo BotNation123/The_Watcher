@@ -31,7 +31,6 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
         await self.tree.sync()
-        
 
 
 intents = discord.Intents.all()
@@ -79,7 +78,9 @@ async def views_test(views: int):
                 print(r.status_code)
             await asyncio.sleep(test_timer)
             print(f"agregado {views} en tantos {test_timer} segundos")
-            await channel.send(f"agregando {views} vistas en {test_timer} segundos al link {y}")
+            await channel.send(
+                f"agregando {views} vistas en {test_timer} segundos al link {y}"
+            )
             test_timer = random.randint(15, 25)
             print(f"nuevo contador: {test_timer}")
             await channel.send(f"nuevo contador: {test_timer}")
@@ -99,7 +100,7 @@ async def testMessage():
     await views_test(45)
     await message_test()
     tiempo = random.randint(1445, 1560)
-    testMessage.change_interval(seconds=10)
+    testMessage.change_interval(minutes=tiempo)
 
 
 @testMessage.before_loop

@@ -31,7 +31,7 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
         await self.tree.sync()
-        # testMessage.start()
+        
 
 
 intents = discord.Intents.all()
@@ -74,32 +74,32 @@ async def views_test(views: int):
         links = handle_getAllLinks()
         for y in links:
             for i in range(views):
-                print(f"adding view {i+1}... to {y} ")
+                print(f"agregando vista {i+1}... al link {y} ")
                 r = requests.get(y, headers=headers)
                 print(r.status_code)
             await asyncio.sleep(test_timer)
-            print(f"added {views}  in {test_timer} seconds")
-            await channel.send(f"added {views} in {test_timer} seconds to {y}")
+            print(f"agregado {views} en tantos {test_timer} segundos")
+            await channel.send(f"agregando {views} vistas en {test_timer} segundos al link {y}")
             test_timer = random.randint(15, 25)
-            print(f"new timer: {test_timer}")
-            await channel.send(f"new timer: {test_timer}")
+            print(f"nuevo contador: {test_timer}")
+            await channel.send(f"nuevo contador: {test_timer}")
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        print(f"Un error ha ocurrido en: {str(e)}")
 
 
 async def message_test():
     channel = await bot.fetch_channel(1179121530769248297)
-    await channel.send(f"test, se ha enviado el mensaje al canal correcto")
+    await channel.send(f"han pasado {tiempo} minutos")
 
 
 @tasks.loop(minutes=tiempo)
 async def testMessage():
     global tiempo
-    # await views_test(45)
+    await views_test(45)
     await message_test()
-    # tiempo = random.randint(1445, 1560)
-    testMessage.change_interval(seconds=5)
+    tiempo = random.randint(1445, 1560)
+    testMessage.change_interval(minutes=tiempo)
 
 
 @testMessage.before_loop

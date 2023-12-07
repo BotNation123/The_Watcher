@@ -47,9 +47,19 @@ tiempo = random.randint(4, 6)  # tiene como 2 minutos de desfase
 test_timer = random.randint(15, 25)
 
 
-async def views_test(views: int):
-    global test_timer
-    channel = await bot.fetch_channel(1179121530769248297)
+def setNewHeader():
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+    ]
+
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
         "accept-encoding": "gzip, deflate, br",
@@ -67,12 +77,20 @@ async def views_test(views: int):
         "sec-fetch-site": "same-origin",
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+        "user-agent": random.choice(user_agents),
     }
+
+    return headers
+
+
+async def views_test(views: int):
+    global test_timer
+    channel = await bot.fetch_channel(1179121530769248297)
     try:
         links = handle_getAllLinks()
         for y in links:
             for i in range(views):
+                headers = setNewHeader()
                 print(f"agregando vista {i+1}... al link {y} ")
                 r = requests.get(y, headers=headers)
                 print(r.status_code)
@@ -81,7 +99,7 @@ async def views_test(views: int):
             await channel.send(
                 f"agregando {views} vistas en {test_timer} segundos al link {y}"
             )
-            test_timer = random.randint(15, 25)
+            test_timer = random.randint(25, 35)
             print(f"nuevo contador: {test_timer}")
             await channel.send(f"nuevo contador: {test_timer}")
 
